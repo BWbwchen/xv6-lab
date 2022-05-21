@@ -654,3 +654,14 @@ procdump(void)
     printf("\n");
   }
 }
+
+int 
+proctrace(int mask)
+{
+    struct proc *p = myproc();
+
+    acquire(&p->lock);
+    p->needtr = mask;
+    release(&p->lock);
+    return mask;
+}
