@@ -305,6 +305,8 @@ fork(void)
 
   pid = np->pid;
 
+  np->needtr = p->needtr;
+
   release(&np->lock);
 
   acquire(&wait_lock);
@@ -663,5 +665,5 @@ proctrace(int mask)
     acquire(&p->lock);
     p->needtr = mask;
     release(&p->lock);
-    return mask;
+    return 0;
 }
