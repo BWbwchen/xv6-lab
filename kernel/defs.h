@@ -63,6 +63,7 @@ void            ramdiskrw(struct buf*);
 void*           kalloc(void);
 void            kfree(void *);
 void            kinit(void);
+int             freepglen(void);
 
 // log.c
 void            initlog(int, struct superblock*);
@@ -139,6 +140,9 @@ int             argaddr(int, uint64 *);
 int             fetchstr(uint64, char*, int);
 int             fetchaddr(uint64, uint64*);
 void            syscall();
+
+// sysinfo.c
+int             sysinfo(uint64);
 
 // trap.c
 extern uint     ticks;

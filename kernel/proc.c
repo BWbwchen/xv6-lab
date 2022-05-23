@@ -5,6 +5,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+#include "sysinfo.h"
 
 struct cpu cpus[NCPU];
 
@@ -666,4 +667,28 @@ proctrace(int mask)
     p->needtr = mask;
     release(&p->lock);
     return 0;
+}
+
+
+int sysinfo(uint64 addr) {
+  struct sysinfo sinfo;
+  
+  // get number of proc whose STATE is UNUSED.
+  struct proc *p;
+
+  sinfo.nproc = 0;
+  for(p = proc; p < &proc[NPROC]; p++) {
+    acquire(&p->lock);
+    if(p->state != UNUSED) {
+      sinfo.nproc++;
+    }
+    release(&p->lock);
+  }
+
+  // get the number of bytes of free memory.
+  sinfo.freemem = freepglen() << 12;
+
+  if(copyout(myproc()->pagetable, addr, (char *)&sinfo, sizeof(sinfo)) < 0)
+    return -1;
+  return 0;
 }
